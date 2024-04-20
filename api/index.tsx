@@ -35,7 +35,7 @@ app.hono.get("/submit", async (c) => {
 });
 
 app.castAction("/submit", async (c) => {
-  await submit(c.actionData.castIdrhash);
+  await submit(c.actionData.castId.hash);
   return c.res({ message: "OK" });
 });
 
