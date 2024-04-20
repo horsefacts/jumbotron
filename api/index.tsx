@@ -44,7 +44,7 @@ app.frame("/", async (c) => {
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
-      "cache-control": "public, max-age=0, must-revalidate",
+      "cache-control": "public, max-age=10, must-revalidate",
     },
     image: (
       <div
