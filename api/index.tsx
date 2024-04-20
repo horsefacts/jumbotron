@@ -35,7 +35,7 @@ app.hono.get("/submit", async (c) => {
 });
 
 app.castAction("/submit", async (c) => {
-  await submit(c.actionData.castId.hash);
+  await submit(c.actionData.castIdrhash);
   return c.res({ message: "OK" });
 });
 
@@ -43,7 +43,33 @@ app.frame("/", async (c) => {
   const hash = await redis.get("cast");
   return c.res({
     imageAspectRatio: "1:1",
-    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
+    headers: {
+      "cache-control": "public, max-age=0, must-revalidate",
+    },
+    image: (
+      <div
+        style={{
+          alignItems: "center",
+          background: "white",
+          backgroundSize: "100% 100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          flexWrap: "nowrap",
+          height: "100%",
+          width: "100%",
+          textAlign: "center",
+          letterSpacing: "-0.05em",
+          textTransform: "uppercase",
+        }}
+      >
+        <img
+          src={`https://client.warpcast.com/v2/cast-image?castHash=${hash}`}
+          width="1200"
+          height="1200"
+        />
+      </div>
+    ),
     intents: [],
   });
 });
