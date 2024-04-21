@@ -67,7 +67,7 @@ app.frame("/refresh", async (c) => {
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
       <Button action="/refresh">Refresh</Button>,
-      <Button action="/vote">Vote</Button>,
+      <Button action="/">Vote</Button>,
       <Button.Link href={ACTION_URL}>Add action</Button.Link>,
     ],
   });
@@ -76,15 +76,16 @@ app.frame("/refresh", async (c) => {
 app.frame("/vote", async (c) => {
   const { buttonValue, frameData } = c;
 
+  const [hash] = await redis.zrevrange("casts", 0, 0);
+
   if (frameData) {
     if (buttonValue === "upvote") {
-      await upvote(frameData.fid, frameData.castId.hash);
+      await upvote(frameData.fid, hash);
     } else if (buttonValue === "downvote") {
-      await downvote(frameData.fid, frameData.castId.hash);
+      await downvote(frameData.fid, hash);
     }
   }
 
-  const [hash] = await redis.zrevrange("casts", 0, 0);
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
