@@ -9,6 +9,7 @@ import { upvote, downvote } from "../lib/votes.js";
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
 const ACTION_URL = `${BASE_URL}/api/frame/submit`;
+const INSTALL_URL = `https://warpcast.com/~/add-cast-action?url=${encodeURI(ACTION_URL)}`;
 
 export const app = new Frog({
   assetsPath: "/",
@@ -36,7 +37,7 @@ app.castAction("/submit", async (c) => {
 });
 
 app.hono.get("/image/jumbotron", async (c) => {
-  const [hash] = await redis.zrevrange("casts", 0, 0);
+  const [hash] = await redis.zrevrange("casts_sorted", 0, 0);
   return c.redirect(
     `https://client.warpcast.com/v2/cast-image?castHash=${hash}`
   );
@@ -52,13 +53,13 @@ app.frame("/", async (c) => {
     intents: [
       <Button action="/refresh">🔄 Refresh</Button>,
       <Button action="/vote">🗳️ Vote</Button>,
-      <Button.Link href={ACTION_URL}>Add action</Button.Link>,
+      <Button.Link href={INSTALL_URL}>Add action</Button.Link>,
     ],
   });
 });
 
 app.frame("/refresh", async (c) => {
-  const [hash] = await redis.zrevrange("casts", 0, 0);
+  const [hash] = await redis.zrevrange("casts_sorted", 0, 0);
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
@@ -68,7 +69,7 @@ app.frame("/refresh", async (c) => {
     intents: [
       <Button action="/refresh">🔄 Refresh</Button>,
       <Button action="/vote">🗳️ Vote</Button>,
-      <Button.Link href={ACTION_URL}>Add action</Button.Link>,
+      <Button.Link href={INSTALL_URL}>Add action</Button.Link>,
     ],
   });
 });
@@ -76,7 +77,7 @@ app.frame("/refresh", async (c) => {
 app.frame("/vote", async (c) => {
   const { buttonValue, frameData } = c;
 
-  const [hash] = await redis.zrevrange("casts", 0, 0);
+  const [hash] = await redis.zrevrange("casts_sorted", 0, 0);
 
   if (frameData) {
     if (buttonValue === "upvote") {
