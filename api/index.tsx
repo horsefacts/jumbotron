@@ -42,39 +42,9 @@ app.castAction("/submit", async (c) => {
   return c.res({ message: "OK" });
 });
 
-app.hono.get("/image/jumbotron", async () => {
+app.hono.get("/image/jumbotron", async (c) => {
   const hash = await redis.get("cast");
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          alignItems: "center",
-          background: "white",
-          backgroundSize: "100% 100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          flexWrap: "nowrap",
-          height: "100%",
-          width: "100%",
-          textAlign: "center",
-          letterSpacing: "-0.05em",
-          textTransform: "uppercase",
-        }}
-      >
-        <img
-          src={`https://client.warpcast.com/v2/cast-image?castHash=${hash}`}
-          width="1200"
-          height="1200"
-        />
-      </div>
-    ),
-    {
-      width: 1200,
-      height: 1200,
-      headers: { "cache-control": "public, max-age=10, must-revalidate" },
-    }
-  );
+  return c.redirect(`https://client.warpcast.com/v2/cast-image?castHash=${hash}`);
 });
 
 app.frame("/", async (c) => {
