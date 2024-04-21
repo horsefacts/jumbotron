@@ -14,7 +14,7 @@ const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
 
 export const app = new Frog({
   assetsPath: "/",
-  basePath: "/api",
+  basePath: "/api/frame",
   //hub: neynar({ apiKey: NEYNAR_API_KEY }),
   imageOptions: {
     height: 1200,
@@ -53,7 +53,7 @@ app.frame("/", async (c) => {
     headers: {
       "cache-control": "public, max-age=0, must-revalidate",
     },
-    image: `${BASE_URL}/api/image/jumbotron`,
+    image: `${BASE_URL}/api/frame/image/jumbotron`,
     intents: [
       <Button action="/">Refresh</Button>
     ],
