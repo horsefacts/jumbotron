@@ -47,7 +47,23 @@ app.frame("/", async (c) => {
     },
     image: `${BASE_URL}/api/frame/image/jumbotron`,
     intents: [
-      <Button action="/">Refresh</Button>
+      <Button action="/refresh">Refresh</Button>
+      <Button action="/vote">Vote</Button>
+      <Button action="/vote">Add action</Button>
+    ],
+  });
+});
+
+app.frame("/refresh", async (c) => {
+  const hash = await redis.get("cast");
+  return c.res({
+    imageAspectRatio: "1:1",
+    headers: {
+      "cache-control": "public, max-age=0, must-revalidate",
+    },
+    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
+    intents: [
+      <Button action="/refresh">Refresh</Button>
     ],
   });
 });
