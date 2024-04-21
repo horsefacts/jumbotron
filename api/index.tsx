@@ -42,7 +42,7 @@ app.castAction("/submit", async (c) => {
   return c.res({ message: "OK" });
 });
 
-app.hono.get("/jumbotron", async () => {
+app.hono.get("/image/jumbotron", async () => {
   const hash = await redis.get("cast");
   return new ImageResponse(
     (
@@ -83,7 +83,7 @@ app.frame("/", async (c) => {
     headers: {
       "cache-control": "public, max-age=10, must-revalidate",
     },
-    image: `${BASE_URL}/api/jumbotron`,
+    image: `${BASE_URL}/api/image/jumbotron`,
     intents: [],
   });
 });
