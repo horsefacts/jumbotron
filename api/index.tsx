@@ -36,7 +36,7 @@ app.castAction("/submit", async (c) => {
 });
 
 app.hono.get("/image/jumbotron", async (c) => {
-  const [hash] = await redis.zrevrange("cast", 0, 0);
+  const [hash] = await redis.zrevrange("casts", 0, 0);
   return c.redirect(`https://client.warpcast.com/v2/cast-image?castHash=${hash}`);
 });
 
@@ -55,7 +55,7 @@ app.frame("/", async (c) => {
 });
 
 app.frame("/refresh", async (c) => {
-  const [hash] = await redis.zrevrange("cast", 0, 0);
+  const [hash] = await redis.zrevrange("casts", 0, 0);
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
