@@ -19,16 +19,17 @@ export async function upvote(fid: number, castId: string) {
   await redis.zincrby("casts", 1, castId);
   await redis.sadd(`votes:${fid}`, castId);
 
-  const timestamp = await redis.zscore("casts_timestamp", castId);
+  let timestamp = await redis.zscore("casts_timestamp", castId);
   if (!timestamp) {
-    await redis.zadd("casts_timestamp", Date.now(), castId);
+    timestamp = Date.now().toString();
+    await redis.zadd("casts_timestamp", timestamp, castId);
   }
 
   const votes = await redis.zscore("casts", castId);
 
   if (timestamp && votes) {
-  const score = calculateScore(votes, timestamp);
-  await redis.zadd("casts_sorted", score, castId);
+    const score = calculateScore(votes, timestamp);
+    await redis.zadd("casts_sorted", score, castId);
   }
 }
 
