@@ -95,7 +95,7 @@ app.frame("/vote", async (c) => {
     },
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
-      <Button.Reset>⬅️ Back</Button.Reset>,
+      <Button action="/refresh">⬅️ Back</Button>,
       <Button value="upvote">👍 Upvote</Button>,
       <Button value="downvote">👎 Downvote</Button>,
     ],
