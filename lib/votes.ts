@@ -1,6 +1,6 @@
 import redis from "./redis.js";
 
-const DECAY_FACTOR = 0.5;
+const DECAY_FACTOR = 0.7;
 
 function calculateScore(votes: string, timestamp: string) {
   const age = (Date.now() - parseInt(timestamp)) / 3600000;
