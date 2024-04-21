@@ -76,17 +76,7 @@ app.frame("/refresh", async (c) => {
 });
 
 app.frame("/vote", async (c) => {
-  const { buttonValue, frameData } = c;
-
   const [hash] = await redis.zrevrange("casts_sorted", 0, 0);
-
-  if (frameData) {
-    if (buttonValue === "upvote") {
-      await upvote(frameData.fid, hash);
-    } else if (buttonValue === "downvote") {
-      await downvote(frameData.fid, hash);
-    }
-  }
 
   return c.res({
     imageAspectRatio: "1:1",
@@ -96,8 +86,52 @@ app.frame("/vote", async (c) => {
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
       <Button action="/refresh">⬅️ Back</Button>,
-      <Button value="upvote">👍 Upvote</Button>,
-      <Button value="downvote">👎 Downvote</Button>,
+      <Button action={`/upvote/${hash}`}>👍 Upvote</Button>,
+      <Button action={`/downvote/${hash}`}>👎 Downvote</Button>,
+    ],
+  });
+});
+
+app.frame("/upvote/:hash", async (c) => {
+  const { frameData } = c;
+  const hash = c.req.param('hash');
+
+  if (frameData) {
+    await upvote(frameData.fid, hash);
+  }
+
+  return c.res({
+    imageAspectRatio: "1:1",
+    headers: {
+      "cache-control": "public, max-age=0, must-revalidate",
+    },
+    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
+    intents: [
+      <Button action="/refresh">🔄 Refresh</Button>,
+      <Button action="/vote">🗳️ Vote</Button>,
+      <Button.Link href={INSTALL_URL}>Add action</Button.Link>,
+    ],
+  });
+});
+
+app.frame("/downvote/:hash", async (c) => {
+  const { frameData } = c;
+  const hash = c.req.param('hash');
+
+  if (frameData) {
+    await downvote(frameData.fid, hash);
+  }
+
+  return c.res({
+    imageAspectRatio: "1:1",
+    headers: {
+      "cache-control": "public, max-age=0, must-revalidate",
+    },
+    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
+    intents: [
+      <Button action="/refresh">🔄 Refresh</Button>,
+      <Button action="/vote">🗳️ Vote</Button>,
+      <Button.Link href={INSTALL_URL}>Add action</Button.Link>,
     ],
   });
 });
