@@ -4,7 +4,7 @@ import { serveStatic } from "frog/serve-static";
 import { handle } from "frog/vercel";
 
 import redis from "../lib/redis.js";
-import { upvote, downvote } from "../lib/submit.js";
+import { upvote, downvote } from "../lib/votes.js";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
@@ -31,7 +31,7 @@ app.hono.get("/submit", async (c) => {
 });
 
 app.castAction("/submit", async (c) => {
-  await upvote(c.actionData.castId.hash);
+  await upvote(c.actionData.fid, c.actionData.castId.hash);
   return c.res({ message: "OK" });
 });
 
