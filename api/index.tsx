@@ -44,6 +44,7 @@ app.castAction("/submit", async (c) => {
 
 app.hono.get("/image/jumbotron", async (c) => {
   const hash = await redis.get("cast");
+  c.res.headers.set("cache-control", "public, max-age=10, must-revalidate");
   return c.redirect(`https://client.warpcast.com/v2/cast-image?castHash=${hash}`);
 });
 
