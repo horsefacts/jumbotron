@@ -4,7 +4,7 @@ import { serveStatic } from "frog/serve-static";
 import { handle } from "frog/vercel";
 
 import redis from "../lib/redis.js";
-import { upvote } from "../lib/submit.js";
+import { upvote, downvote } from "../lib/submit.js";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
@@ -37,7 +37,9 @@ app.castAction("/submit", async (c) => {
 
 app.hono.get("/image/jumbotron", async (c) => {
   const [hash] = await redis.zrevrange("casts", 0, 0);
-  return c.redirect(`https://client.warpcast.com/v2/cast-image?castHash=${hash}`);
+  return c.redirect(
+    `https://client.warpcast.com/v2/cast-image?castHash=${hash}`
+  );
 });
 
 app.frame("/", async (c) => {
@@ -49,7 +51,8 @@ app.frame("/", async (c) => {
     image: `${BASE_URL}/api/frame/image/jumbotron`,
     intents: [
       <Button action="/refresh">Refresh</Button>,
-      <Button.Link href={ACTION_URL}>Add action</Button.Link>
+      <Button action="/vote">Vote</Button>,
+      <Button.Link href={ACTION_URL}>Add action</Button.Link>,
     ],
   });
 });
@@ -64,7 +67,34 @@ app.frame("/refresh", async (c) => {
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
       <Button action="/refresh">Refresh</Button>,
-      <Button.Link href={ACTION_URL}>Add action</Button.Link>
+      <Button action="/refresh">Vote</Button>,
+      <Button.Link href={ACTION_URL}>Add action</Button.Link>,
+    ],
+  });
+});
+
+app.frame("/vote", async (c) => {
+  const { buttonValue, frameData } = c;
+
+  if (frameData) {
+    if (buttonValue === "upvote") {
+      await upvote(frameData.castId.hash);
+    } else if (buttonValue === "downvote") {
+      await downvote(frameData.castId.hash);
+    }
+  }
+
+  const [hash] = await redis.zrevrange("casts", 0, 0);
+  return c.res({
+    imageAspectRatio: "1:1",
+    headers: {
+      "cache-control": "public, max-age=0, must-revalidate",
+    },
+    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
+    intents: [
+      <Button.Reset>Back</Button.Reset>,
+      <Button value="upvote">Upvote</Button>,
+      <Button value="downvote">Downvote</Button>,
     ],
   });
 });
