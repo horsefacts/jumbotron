@@ -92,13 +92,15 @@ app.frame("/vote", async (c) => {
   });
 });
 
-app.frame("/upvote/:hash", async (c) => {
+app.frame("/upvote/:castId", async (c) => {
   const { frameData } = c;
-  const hash = c.req.param('hash');
+  const castId = c.req.param('castId');
 
   if (frameData) {
-    await upvote(frameData.fid, hash);
+    await upvote(frameData.fid, castId);
   }
+
+  const [hash] = await redis.zrevrange("casts_sorted", 0, 0);
 
   return c.res({
     imageAspectRatio: "1:1",
@@ -114,13 +116,15 @@ app.frame("/upvote/:hash", async (c) => {
   });
 });
 
-app.frame("/downvote/:hash", async (c) => {
+app.frame("/downvote/:castId", async (c) => {
   const { frameData } = c;
-  const hash = c.req.param('hash');
+  const castId = c.req.param('castId');
 
   if (frameData) {
-    await downvote(frameData.fid, hash);
+    await downvote(frameData.fid, castId);
   }
+
+  const [hash] = await redis.zrevrange("casts_sorted", 0, 0);
 
   return c.res({
     imageAspectRatio: "1:1",
