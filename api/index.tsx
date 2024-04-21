@@ -7,7 +7,10 @@ import { handle } from "frog/vercel";
 import redis from "../lib/redis.js";
 import { submit } from "../lib/submit.js";
 
+import { ImageResponse } from "hono-og";
+
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
+const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
 
 export const app = new Frog({
   assetsPath: "/",
@@ -39,14 +42,10 @@ app.castAction("/submit", async (c) => {
   return c.res({ message: "OK" });
 });
 
-app.frame("/", async (c) => {
+app.hono.get("/jumbotron", async () => {
   const hash = await redis.get("cast");
-  return c.res({
-    imageAspectRatio: "1:1",
-    headers: {
-      "cache-control": "public, max-age=10, must-revalidate",
-    },
-    image: (
+  return new ImageResponse(
+    (
       <div
         style={{
           alignItems: "center",
@@ -70,6 +69,17 @@ app.frame("/", async (c) => {
         />
       </div>
     ),
+    { width: 1200, height: 1200 }
+  );
+});
+
+app.frame("/", async (c) => {
+  return c.res({
+    imageAspectRatio: "1:1",
+    headers: {
+      "cache-control": "public, max-age=10, must-revalidate",
+    },
+    image: `${BASE_URL}/api/jumbotron`,
     intents: [],
   });
 });
