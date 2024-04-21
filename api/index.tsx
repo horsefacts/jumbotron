@@ -50,8 +50,8 @@ app.frame("/", async (c) => {
     },
     image: `${BASE_URL}/api/frame/image/jumbotron`,
     intents: [
-      <Button action="/refresh">Refresh</Button>,
-      <Button action="/vote">Vote</Button>,
+      <Button action="/refresh">🔄 Refresh</Button>,
+      <Button action="/vote">🗳️ Vote</Button>,
       <Button.Link href={ACTION_URL}>Add action</Button.Link>,
     ],
   });
@@ -66,8 +66,8 @@ app.frame("/refresh", async (c) => {
     },
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
-      <Button action="/refresh">Refresh</Button>,
-      <Button action="/vote">Vote</Button>,
+      <Button action="/refresh">🔄 Refresh</Button>,
+      <Button action="/vote">🗳️ Vote</Button>,
       <Button.Link href={ACTION_URL}>Add action</Button.Link>,
     ],
   });
@@ -93,9 +93,9 @@ app.frame("/vote", async (c) => {
     },
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
-      <Button.Reset>Back</Button.Reset>,
-      <Button value="upvote">Upvote</Button>,
-      <Button value="downvote">Downvote</Button>,
+      <Button.Reset>⬅️ Back</Button.Reset>,
+      <Button value="upvote">👍 Upvote</Button>,
+      <Button value="downvote">👎 Downvote</Button>,
     ],
   });
 });
