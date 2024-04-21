@@ -61,12 +61,13 @@ app.frame("/", async (c) => {
 });
 
 app.frame("/refresh", async (c) => {
+  const hash = await redis.get("cast");
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
       "cache-control": "public, max-age=0, must-revalidate",
     },
-    image: `${BASE_URL}/api/frame/image/jumbotron`,
+    image: (<img src={`https://client.warpcast.com/v2/cast-image?castHash=${hash}`} width="1200" height="1200" />),
     intents: [
       <Button action="/refresh">Refresh</Button>
     ],
