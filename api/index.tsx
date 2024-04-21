@@ -5,6 +5,7 @@ import { handle } from "frog/vercel";
 
 import redis from "../lib/redis.js";
 import { upvote, downvote } from "../lib/votes.js";
+import { neynar } from "frog/hubs";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
@@ -14,7 +15,7 @@ const INSTALL_URL = `https://warpcast.com/~/add-cast-action?url=${encodeURI(ACTI
 export const app = new Frog({
   assetsPath: "/",
   basePath: "/api/frame",
-  //hub: neynar({ apiKey: NEYNAR_API_KEY }),
+  hub: neynar({ apiKey: NEYNAR_API_KEY }),
   imageOptions: {
     height: 1200,
     width: 1200,
@@ -23,7 +24,7 @@ export const app = new Frog({
 
 app.hono.get("/submit", async (c) => {
   return c.json({
-    name: "Jumbotron (exprmntl)",
+    name: "Jumbotron",
     icon: "star",
     description: "Submit a cast to the Jumbotron",
     action: {
