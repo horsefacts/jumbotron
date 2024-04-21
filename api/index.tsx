@@ -67,7 +67,7 @@ app.frame("/refresh", async (c) => {
     headers: {
       "cache-control": "public, max-age=0, must-revalidate",
     },
-    image: (<img src={`https://client.warpcast.com/v2/cast-image?castHash=${hash}`} width="1200" height="1200" />),
+    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
       <Button action="/refresh">Refresh</Button>
     ],
