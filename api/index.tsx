@@ -69,7 +69,11 @@ app.hono.get("/jumbotron", async () => {
         />
       </div>
     ),
-    { width: 1200, height: 1200 }
+    {
+      width: 1200,
+      height: 1200,
+      headers: { "cache-control": "public, max-age=10, must-revalidate" },
+    }
   );
 });
 
