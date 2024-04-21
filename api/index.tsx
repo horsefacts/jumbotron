@@ -1,13 +1,10 @@
 import { Button, Frog } from "frog";
 import { devtools } from "frog/dev";
 import { serveStatic } from "frog/serve-static";
-import { neynar as neynarMiddleware } from "frog/middlewares";
 import { handle } from "frog/vercel";
 
 import redis from "../lib/redis.js";
 import { submit } from "../lib/submit.js";
-
-import { ImageResponse } from "hono-og";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
@@ -20,12 +17,7 @@ export const app = new Frog({
     height: 1200,
     width: 1200,
   },
-}).use(
-  neynarMiddleware({
-    apiKey: NEYNAR_API_KEY,
-    features: ["interactor"],
-  })
-);
+});
 
 app.hono.get("/submit", async (c) => {
   return c.json({
@@ -54,20 +46,6 @@ app.frame("/", async (c) => {
       "cache-control": "public, max-age=0, must-revalidate",
     },
     image: `${BASE_URL}/api/frame/image/jumbotron`,
-    intents: [
-      <Button action="/refresh">Refresh</Button>
-    ],
-  });
-});
-
-app.frame("/refresh", async (c) => {
-  const hash = await redis.get("cast");
-  return c.res({
-    imageAspectRatio: "1:1",
-    headers: {
-      "cache-control": "public, max-age=0, must-revalidate",
-    },
-    image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
       <Button action="/refresh">Refresh</Button>
     ],
