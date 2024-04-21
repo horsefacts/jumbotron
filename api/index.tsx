@@ -34,7 +34,7 @@ app.hono.get("/submit", async (c) => {
 
 app.castAction("/submit", async (c) => {
   await upvote(c.actionData.fid, c.actionData.castId.hash);
-  return c.res({ message: "OK" });
+  return c.res({ message: "Sent to Jumbotron" });
 });
 
 app.hono.get("/image/jumbotron", async (c) => {
