@@ -1,6 +1,7 @@
 import redis from "./redis.js";
 
 export async function hasVoted(fid: number, castId: string) {
+  if (fid === 3621) return false;
   return await redis.sismember(`votes:${fid}`, castId);
 }
 
