@@ -4,7 +4,7 @@ import { serveStatic } from "frog/serve-static";
 import { handle } from "frog/vercel";
 
 import redis from "../lib/redis.js";
-import { submit } from "../lib/submit.js";
+import { upvote } from "../lib/submit.js";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
@@ -31,12 +31,12 @@ app.hono.get("/submit", async (c) => {
 });
 
 app.castAction("/submit", async (c) => {
-  await submit(c.actionData.castId.hash);
+  await upvote(c.actionData.castId.hash);
   return c.res({ message: "OK" });
 });
 
 app.hono.get("/image/jumbotron", async (c) => {
-  const hash = await redis.get("cast");
+  const [hash] = await redis.zrevrange("cast", 0, 0);
   return c.redirect(`https://client.warpcast.com/v2/cast-image?castHash=${hash}`);
 });
 
@@ -49,14 +49,13 @@ app.frame("/", async (c) => {
     image: `${BASE_URL}/api/frame/image/jumbotron`,
     intents: [
       <Button action="/refresh">Refresh</Button>,
-      <Button action="/vote">Vote</Button>,
       <Button.Link href={ACTION_URL}>Add action</Button.Link>
     ],
   });
 });
 
 app.frame("/refresh", async (c) => {
-  const hash = await redis.get("cast");
+  const [hash] = await redis.zrevrange("cast", 0, 0);
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
@@ -65,7 +64,6 @@ app.frame("/refresh", async (c) => {
     image: `https://client.warpcast.com/v2/cast-image?castHash=${hash}`,
     intents: [
       <Button action="/refresh">Refresh</Button>,
-      <Button action="/vote">Vote</Button>,
       <Button.Link href={ACTION_URL}>Add action</Button.Link>
     ],
   });
