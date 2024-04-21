@@ -27,8 +27,8 @@ export async function upvote(fid: number, castId: string) {
   const votes = await redis.zscore("casts", castId);
 
   if (timestamp && votes) {
-    const score = calculateScore(votes, timestamp);
-    await redis.zadd("casts_sorted", score, castId);
+  const score = calculateScore(votes, timestamp);
+  await redis.zadd("casts_sorted", score, castId);
   }
 }
 
