@@ -44,7 +44,7 @@ app.castAction("/submit", async (c) => {
 
 app.hono.get("/image/jumbotron", async (c) => {
   const hash = await redis.get("cast");
-  c.res.headers.set("cache-control", "public, max-age=10, must-revalidate");
+  c.res.headers.set("cache-control", "public, max-age=0, must-revalidate");
   return c.redirect(`https://client.warpcast.com/v2/cast-image?castHash=${hash}`);
 });
 
@@ -52,7 +52,7 @@ app.frame("/", async (c) => {
   return c.res({
     imageAspectRatio: "1:1",
     headers: {
-      "cache-control": "public, max-age=10, must-revalidate",
+      "cache-control": "public, max-age=0, must-revalidate",
     },
     image: `${BASE_URL}/api/image/jumbotron`,
     intents: [],
