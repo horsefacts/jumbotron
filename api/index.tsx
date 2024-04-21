@@ -9,12 +9,12 @@ import { neynar } from "frog/hubs";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
-const ACTION_URL = `${BASE_URL}/api/frame/submit`;
+const ACTION_URL = `${BASE_URL}/api/submit`;
 const INSTALL_URL = `https://warpcast.com/~/add-cast-action?url=${encodeURI(ACTION_URL)}`;
 
 export const app = new Frog({
   assetsPath: "/",
-  basePath: "/api/frame",
+  basePath: "/api",
   hub: neynar({ apiKey: NEYNAR_API_KEY }),
   imageOptions: {
     height: 1200,
@@ -51,7 +51,7 @@ app.frame("/", async (c) => {
     headers: {
       "cache-control": "public, max-age=0, must-revalidate",
     },
-    image: `${BASE_URL}/api/frame/image/jumbotron`,
+    image: `${BASE_URL}/api/image/jumbotron`,
     intents: [
       <Button action="/refresh">🔄 Refresh</Button>,
       <Button action="/vote">🗳️ Vote</Button>,
