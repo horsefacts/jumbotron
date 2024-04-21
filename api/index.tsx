@@ -78,9 +78,9 @@ app.frame("/vote", async (c) => {
 
   if (frameData) {
     if (buttonValue === "upvote") {
-      await upvote(frameData.castId.hash);
+      await upvote(frameData.fid, frameData.castId.hash);
     } else if (buttonValue === "downvote") {
-      await downvote(frameData.castId.hash);
+      await downvote(frameData.fid, frameData.castId.hash);
     }
   }
 
