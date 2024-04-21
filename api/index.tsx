@@ -23,8 +23,9 @@ export const app = new Frog({
 
 app.hono.get("/submit", async (c) => {
   return c.json({
-    name: "Jumbotron Dev",
+    name: "Jumbotron (exprmntl)",
     icon: "star",
+    description: "Submit a cast to the Jumbotron",
     action: {
       type: "post",
     },
