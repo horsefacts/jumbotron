@@ -8,6 +8,7 @@ import { submit } from "../lib/submit.js";
 
 const NEYNAR_API_KEY = process.env.NEYNAR_API_KEY ?? "NEYNAR_FROG_FM";
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:5173";
+const ACTION_URL = `${BASE_URL}/api/frame/submit`;
 
 export const app = new Frog({
   assetsPath: "/",
@@ -49,7 +50,7 @@ app.frame("/", async (c) => {
     intents: [
       <Button action="/refresh">Refresh</Button>,
       <Button action="/vote">Vote</Button>,
-      <Button.Link href="">Add action</Button.Link>
+      <Button.Link href={ACTION_URL}>Add action</Button.Link>
     ],
   });
 });
@@ -65,7 +66,7 @@ app.frame("/refresh", async (c) => {
     intents: [
       <Button action="/refresh">Refresh</Button>,
       <Button action="/vote">Vote</Button>,
-      <Button.Link href="">Add action</Button.Link>
+      <Button.Link href={ACTION_URL}>Add action</Button.Link>
     ],
   });
 });
