@@ -55,7 +55,7 @@ app.frame("/", async (c) => {
     },
     image: `${BASE_URL}/api/image/jumbotron`,
     intents: [
-      <Button>Refresh</Button>
+      <Button action="/">Refresh</Button>
     ],
   });
 });
